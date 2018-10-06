@@ -1,0 +1,17 @@
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: markadams/chromium-xvfb-js
+    tag: 'latest'
+
+inputs:
+- name: test_coverage
+
+run:
+  path: sh
+  args:
+  - -exc
+  - |
+    <(curl -s https://codecov.io/bash) -t 74f47ed8-ef1f-4423-9abe-3ad06ddd739a || echo 'Codecov failed to upload'
