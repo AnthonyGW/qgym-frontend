@@ -1,0 +1,26 @@
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: tonywaithaka/quickgym-app
+    tag: 'latest'
+    username: ''
+    password: ''
+
+inputs:
+- name: qgym_repo
+- name: npm_repo_cache
+  path: /cache
+
+outputs:
+- name: test_coverage
+
+run:
+  path: sh
+  args:
+  - -exc
+  - |
+    mv cache/node_modules qgym_repo
+    echo "Execute the build script here"
+
