@@ -1,31 +1,33 @@
-import { TestBed, async } from '@angular/core/testing';
-import { AppComponent } from './app.component';
+import { async, TestBed } from '@angular/core/testing'
+import { BrowserModule, By } from '@angular/platform-browser'
+import { RouterTestingModule } from '@angular/router/testing'
+import { AppComponent } from './app.component'
+import { CoreModule } from './core/core.module'
+import { LandingModule } from './landing/landing.module'
+import { SharedModule } from './shared/shared.module'
+import { WorkoutRunnerModule } from './workout-runner/workout-runner.module'
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        AppComponent
+      declarations: [AppComponent],
+      imports: [
+        BrowserModule,
+        WorkoutRunnerModule,
+        LandingModule,
+        CoreModule,
+        SharedModule,
+        RouterTestingModule,
       ],
-    }).compileComponents();
-  }));
+    }).compileComponents()
+  }))
 
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  });
+    const fixture = TestBed.createComponent(AppComponent)
+    const app = fixture.debugElement.componentInstance
+    const headerDebugElement = fixture.debugElement.query(By.css('app-header'))
+    headerDebugElement.componentInstance.isSignedIn = false
 
-  it(`should have as title 'quickgym'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('quickgym');
-  });
-
-  it('should render title in a h1 tag', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to quickgym!');
-  });
-});
+    expect(app).toBeTruthy()
+  })
+})
