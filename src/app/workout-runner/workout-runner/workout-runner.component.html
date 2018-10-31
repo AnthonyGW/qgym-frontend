@@ -1,0 +1,92 @@
+<div class="row" id="workout-info-panel">
+  <div class="col text-left">
+    <h3>{{workoutPlan.name}}</h3>
+    <span [innerHTML]="workoutPlan.description"></span>
+  </div>
+  <div class="col text-right">
+    <h4>{{currentExerciseIndex + 1}}/{{workoutPlan.exercises.length}}</h4>
+    <h6>Remaining - {{workoutTimeRemaining | secondsToTime}}</h6>
+    <button class="btn btn-primary btn-sm" (click)="start()">Restart Workout</button>
+  </div>
+</div>
+<div class="row" id="exercise-info-panel">
+  <div id="description-panel" class="col-sm-3 text-left">
+    <app-exercise-description [description]="currentExercise.description" [steps]="currentExercise.procedure"></app-exercise-description>
+  </div>
+  <div id="exercise-pane" class="col-sm-6 text-center">
+    <h1>{{currentExercise.title}}</h1>
+    <div class="image-container row">
+      <img class="img-fluid col-sm" [src]="safeImageURL" (click)="pauseResumeToggle()" (window:keyup)="onKeyPressed($event)" />
+    </div>
+    <div *ngIf="currentExercise.name == 'rest'">
+      <h4>Next Exercise: {{workoutPlan.exercises[currentExerciseIndex + 1].title}}</h4>
+    </div>
+    <div class="progress time-progress row">
+      <div class="progress-bar" role="progressbar" [attr.aria-valuenow]="exerciseRunningDuration" aria-valuemin="0"
+        [attr.aria-valuemax]="workoutPlan.exerciseDuration" [ngStyle]="{'width': (exerciseRunningDuration/currentExerciseDuration) * 100 + '%'}">
+      </div>
+    </div>
+    <br>
+    <div class="text-center">
+      <h4>Time Remaining: <strong>{{currentExerciseDuration - exerciseRunningDuration}}</strong></h4>
+    </div>
+    <br>
+    <div class="row justify-content-around">
+      <div class="col">
+        <button class="btn btn-primary btn-lg" id="pause-play-button" (click)="pauseResumeToggle()"><span class="pause"
+            [ngClass]="{'ion-md-pause' : !workoutPaused, 'ion-md-play': workoutPaused}">
+          </span></button>
+        <button class="btn btn-primary" id="restart-exercise-button" (click)="restartExercise()">Restart
+          Exercise</button>
+        <button class="btn btn-primary btn-lg" id="volume-mute-button" (click)="toggleMute()"><span class="audio-volume"
+            [ngClass]="{'ion-md-volume-high' : !workoutMuted, 'ion-md-volume-off': workoutMuted}">
+          </span></button>
+      </div>
+    </div>
+    <br>
+    <p>Hint: Use 'p' to pause and resume the exercise</p>
+  </div>
+  <div id="video-panel" class="col-sm-3">
+    <app-video-player *ngIf="currentExercise.name !== 'rest'" [exerciseName]="currentExercise.title" (openVideoDialog)="pause()"
+      (closeVideoDialog)="resume()"></app-video-player>
+  </div>
+</div>
+<div *ngIf="musicData" class="row" id="audio-info-panel">
+  <div class="card" id="audio-info-pane">
+    <h4 class="card-header">Music Attributes</h4>
+    <div class="card-body row">
+      <div class="col-sm-3" id="track-artwork">
+        <img id="track-artwork" [src]="musicData.artwork_url" alt="Track Artwork">
+      </div>
+      <div class="col-sm-9 text-left">
+        <img id="artist-avatar" [src]="musicData.user.avatar_url" alt="Track Artist Avatar">
+        <a [href]="musicData.user.permalink_url">Track
+          Artist: {{musicData.user.username}}</a>
+        <br>
+        <a [href]="musicData.permalink_url">Track Title: {{musicData.title}}</a>
+        <br>
+        Powered By: <img id="music-logo" href="https://hearthis.at" src="https://hearthis.at/_/v3/img/logo.png" alt="HearThis Logo">
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal" [ngClass]="{show: isFinished}" [ngStyle]="{display: isFinished?'block':'none'}" [attr.aria-hidden]="isFinished?'':'true'"
+  id="workoutComplete">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Congratulations!!</h3>
+      </div>
+      <div class="modal-body text-left">
+        <h5>What's next?</h5>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="start()" data-dismiss="modal">Restart this Workout</button>
+        <button *ngIf="isSignedIn" type="button" class="btn btn-primary" routerLink="/dashboard" data-dismiss="modal">Return
+          to Dashboard</button>
+        <button *ngIf="!isSignedIn" type="button" class="btn btn-primary" routerLink="/home/signup" data-dismiss="modal">Sign
+          up to customize workouts</button>
+      </div>
+    </div>
+  </div>
+</div>

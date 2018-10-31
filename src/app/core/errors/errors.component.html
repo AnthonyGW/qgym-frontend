@@ -1,0 +1,19 @@
+<h2>Error:</h2>
+<div *ngIf="this.authService.error && this.authService.error.status === 404">
+  <h3>Not Found</h3>
+  <p>The requested resource is unavailable.</p>
+</div>
+<div *ngIf="this.authService.error && this.authService.error.status === 401">
+  <h3>Unauthorized</h3>
+  <p>You don't have the clearance to access this resource.</p>
+</div>
+<div *ngIf="this.authService.hasError && !isSignedIn">
+  <h3>Don't Panic!</h3>
+  <p>I'm not sure what's happening but we can make it through this.</p>
+</div>
+<div *ngIf="!this.authService.error">
+  <h3>Not Found</h3>
+  <p>Whatever you were looking for could not be found.</p>
+</div>
+<h4 *ngIf="isSignedIn">Return to <a routerLink="/dashboard">dashboard</a></h4>
+<h4 *ngIf="!isSignedIn">Return to <a routerLink="/home">home</a></h4>

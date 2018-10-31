@@ -1,0 +1,12 @@
+<div class="card">
+  <h4 class="card-header">Videos</h4>
+  <div class="card-body">
+    <div *ngFor="let video of videoList" class="row">
+      <app-video-dialog [video]="video" (closeVideoDialog)="closeVideo()"></app-video-dialog>
+      <div class="col-sm-12 p-2">
+        <img class="video-image" [src]="video.snippet.thumbnails.default.url" (click)="openVideo()" data-toggle="modal"
+          [attr.data-target]="'#'+video.id.videoId" />
+      </div>
+    </div>
+  </div>
+</div>
