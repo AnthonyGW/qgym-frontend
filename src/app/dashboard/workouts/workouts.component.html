@@ -1,0 +1,29 @@
+<h1 class="text-center">Workouts</h1>
+<div class="row justify-content-md-center">
+  <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#workoutBuilder" (click)="buildWorkout('')"><span
+      class="ion-md-add"></span>
+    Add a New Workout</button>
+</div>
+<br>
+<div class="row justify-content-md-center">
+  <div class="list-group" *ngFor="let workout of workoutList | orderBy: 'name'" style="min-width: 50rem;">
+    <a class="list-group-item list-group-item-action flex-column align-items-start">
+      <div (click)="onSelect(workout)">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1">{{workout.name}}</h5>
+          <p class="mb-1"><strong>Duration: </strong>{{(workout.totalWorkoutDuration ? workout.totalWorkoutDuration() :
+            0)
+            | secondsToTime}}</p>
+        </div>
+        <p class="mb-1" [ngClass]="{'text-muted': !workout.description}" [innerHTML]="workout.description ? workout.description :
+        'No
+        Description'"></p>
+        <small><b>Exercises:</b> {{workout.exercises | concatlist: 'title' : 5}}</small>
+      </div>
+      <button class="btn btn-primary btn-md float-right" (click)="deleteWorkout(workout.id)"><span class="ion-md-trash"></span></button>
+      <button class="btn btn-primary btn-md float-right" style="margin-right: 10px;" data-toggle="modal" data-target="#workoutBuilder"
+        (click)="buildWorkout(workout.name)"><span class="ion-md-create"></span></button>
+    </a>
+  </div>
+</div>
+<app-workout *ngIf="workoutBuilderService.buildingWorkout" (saveBuildingWorkout)="saveWorkout()"></app-workout>

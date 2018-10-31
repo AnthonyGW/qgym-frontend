@@ -1,0 +1,105 @@
+<div class="modal fade" id="workoutBuilder" (click)="($event.target.id && ($event.target.id == 'workoutBuilder')) ? finishBuilding() : true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content modal-wide">
+      <div class="modal-body">
+        <form #f="ngForm" name="formWorkout" (ngSubmit)="save(f.form)">
+          <div class="row">
+            <div class="col" style="border-right: 1px solid #e9ecef">
+              <div class="form-group">
+                <label for="workout-name">Workout Name:</label>
+                <input type="text" #workoutName="ngModel" name="workoutName" class="form-control" id="workout-name"
+                  placeholder="Enter workout name. Must be unique." [(ngModel)]="workoutBuilderService.workoutBuild.name"
+                  minlength="5" maxlength="20" required>
+                <div *ngIf="workoutName.touched || workoutBuilderService.submitted">
+                  <label *ngIf="workoutName.control.hasError('required') && workoutBuilderService.submitted" class="alert alert-danger validation-message">Name
+                    is required</label>
+                  <label *ngIf="(workoutName.control.hasError('minlength') || workoutName.control.hasError('maxlength') && (workoutBuilderService.workoutBuild.name.length > 0)) && workoutBuilderService.submitted"
+                    class="alert alert-danger">Name should be between 5 and 20 characters long</label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="workout-description">Description:</label>
+                <textarea name="description" class="form-control" id="workout-description" placeholder="Enter a description for this workout."
+                  style="min-height: 150px;" [(ngModel)]="workoutBuilderService.workoutBuild.description"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="workout-rest" title="The amount of time to rest in between exercises">Rest Time (in
+                  seconds):</label>
+                <select class="select-duration form-control" name="restBetweenExercise" id="workout-rest" [(ngModel)]="workoutBuilderService.workoutBuild.restBetweenExercise">
+                  <option *ngFor="let duration of durations" [value]="duration.value">{{duration.title}}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="workout-exercise-duration" title="The amount of time each exercise will take">Exercise Time
+                  (in seconds):</label>
+                <select class="select-duration form-control" name="exerciseDuration" id="workout-exercise-duration"
+                  [(ngModel)]="workoutBuilderService.workoutBuild.exerciseDuration">
+                  <option *ngFor="let duration of durations" [value]="duration.value">{{duration.title}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col" style="border-right: 1px solid #e9ecef">
+              <div class="form-group">
+                <label>Total Exercises: </label>
+                <span class="badge badge-pill badge-primary">{{workoutBuilderService.workoutBuild.exercises?.length}}</span>
+                <br>
+                <label>Total Duration: </label>
+                <span class="badge badge-pill badge-primary" *ngIf="workoutBuilderService.workoutBuild.exercises?.length>0">
+                  {{workoutBuilderService.workoutBuild.totalWorkoutDuration() | secondsToTime}}</span>
+              </div>
+              <div *ngIf="removeTouched || workoutBuilderService.submitted">
+                <input type="hidden" name="exerciseCount" #exerciseCount="ngModel" ngControl="exerciseCount" class="form-control"
+                  id="exercise-count" [(ngModel)]="workoutBuilderService.workoutBuild.exercises.length" pattern="[1-9][0-9]*">
+                <label *ngIf="exerciseCount.control.hasError('pattern') && workoutBuilderService.submitted" class="alert alert-danger extended-validation-message">The
+                  workout should have at least one exercise!</label>
+              </div>
+              <div class="row">
+                <select class="select-exercise form-control col-sm-9" style="margin-left: 10px" name="exerciseSelect"
+                  id="workout-exercise-duration" [(ngModel)]="selectedExercise">
+                  <option *ngFor="let exercise of workoutBuilderService.allExercises; let i = index" [value]="exercise.name">{{exercise.title}}</option>
+                </select>
+                <button class="btn btn-md btn-primary" style="margin-left: 10px" (click)="addExercise()"><span class="ion-md-add"></span></button>
+              </div>
+              <p *ngFor="let workoutExercise of workoutBuilderService.workoutBuild.exercises; let i = index">
+                {{i + 1}}. {{workoutExercise.title}}
+                <span class="ion-md-arrow-up" (click)="moveExerciseTo(i, (i - 1))" style="margin-right: 5px"></span>
+                <span class="ion-md-arrow-down" (click)="moveExerciseTo(i, (i + 1))" style="margin-right: 5px"></span>
+                <span class="ion-md-trash" (click)="removeExercise(i)"></span></p>
+            </div>
+            <div class="col">
+              <label for="workout-name">Track Name:</label>
+              <div class="row">
+                <div class="col-sm-9">
+                  <input type="text" name="trackName" class="form-control" id="track-name" placeholder="Search for a music track on HearThis"
+                    [(ngModel)]="searchTerm">
+                </div>
+                <div class="col-sm-2">
+                  <button class="btn btn-md btn-primary" (click)="searchMusic()">Search</button>
+                </div>
+              </div>
+              <br>
+              <div *ngIf="searchResults" class="music-search-results">
+                <div *ngFor="let result of searchResults; let idx = index">
+                  <div class="radio" style="border-bottom: 1px solid #e9ecef; padding-left: 5px">
+                    <input type="radio" [id]="result.id" name="musicTracks" [attr.data-preview]="result.preview_url"
+                      [value]="result.user.permalink + '/' + result.permalink" [(ngModel)]="workoutBuilderService.workoutBuild.track"
+                      [attr.checked]="idx === 0" />
+                    <div>{{result.user.username}}: {{result.title}}</div>
+                    <audio controls [attr.name]="result.id">
+                      <source src="{{result.preview_url}}" type="audio/mpeg">
+                    </audio>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" [attr.data-dismiss]="(workoutBuilderService.finishedBuilding && workoutBuilderService.submitted) ? 'modal' : ''"
+          (click)="f.onSubmit()">Save</button>
+        <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
