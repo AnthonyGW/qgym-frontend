@@ -1,0 +1,4 @@
+<app-workout-runner [workoutPlan]="workout" [restExercise]="restExercise" (exercisePaused)="wa.stop()"
+  (exerciseResumed)="wa.resume()" (exerciseChanged)="wa.onExerciseChanged($event)" (workoutStarted)="wa.retrieveTrack(workout.track, true)"
+  (workoutStarted)="wa.resume(true)" (workoutComplete)="wa.stop()" (workoutMusicToggle)="wa.toggleMute($event)" [musicData]="wa.musicData"></app-workout-runner>
+<app-workout-audio #wa [trackId]="workout.track"></app-workout-audio>
