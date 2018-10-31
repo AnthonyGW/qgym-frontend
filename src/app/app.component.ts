@@ -1,10 +1,16 @@
-import { Component } from '@angular/core';
+import { Component } from '@angular/core'
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styles: [],
 })
 export class AppComponent {
-  title = 'quickgym';
+  isSignedIn() {
+    if (localStorage.getItem('isSignedIn') === 'true') {
+      return true
+    } else {
+      return false
+    }
+  }
 }
