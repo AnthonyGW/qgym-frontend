@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
-import { AuthGuard, AuthWorkoutGuard } from './core/auth.guard'
+import { AuthGuard, AuthLandingGuard, AuthWorkoutGuard } from './core/auth.guard'
 import { ErrorsComponent } from './core/errors/errors.component'
 
 const routes: Routes = [
@@ -8,6 +8,7 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: './landing/landing.module#LandingModule',
+    canActivateChild: [AuthLandingGuard],
   },
   {
     path: 'workout',

@@ -7,14 +7,7 @@ import { AuthenticationService } from '../services/authentication.service'
   styles: [],
 })
 export class ErrorsComponent implements OnInit {
-  isSignedIn: boolean
   constructor(public authService: AuthenticationService) {}
 
-  ngOnInit() {
-    if (localStorage.getItem('isSignedIn') === 'true') {
-      this.isSignedIn = true
-    } else {
-      this.isSignedIn = false
-    }
-  }
+  ngOnInit() {}
 }

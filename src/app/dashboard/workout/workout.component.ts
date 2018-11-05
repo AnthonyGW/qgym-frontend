@@ -81,7 +81,6 @@ export class WorkoutComponent implements OnInit {
       return
     } else {
       // Close the modal
-      this.workoutBuilderService.workoutBuild = null
       this.workoutBuilderService.finishedBuilding = true
       this.saveBuildingWorkout.emit(null)
     }

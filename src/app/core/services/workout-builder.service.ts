@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core'
+import { CoreModule } from '../core.module'
 import { Exercise, WorkoutPlan } from '../model'
 import { WorkoutService } from './workout.service'
 
-@Injectable()
+@Injectable({
+  providedIn: CoreModule,
+})
 export class WorkoutBuilderService {
   workoutList: Array<WorkoutPlan>
   workoutBuild: WorkoutPlan
@@ -54,13 +57,13 @@ export class WorkoutBuilderService {
         retrievedWorkout.exercises,
         retrievedWorkout.restBetweenExercise,
         retrievedWorkout.exerciseDuration,
-        retrievedWorkout.description,
-        retrievedWorkout.track,
+        retrievedWorkout.description || '',
+        retrievedWorkout.track || '',
         retrievedWorkout.id
       )
       this.newWorkout = false
     } else {
-      this.workoutBuild = new WorkoutPlan('', [], 10, 30, '')
+      this.workoutBuild = new WorkoutPlan('', [], 10, 30, '', '')
       this.newWorkout = true
     }
     return this.workoutBuild

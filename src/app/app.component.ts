@@ -1,4 +1,5 @@
 import { Component } from '@angular/core'
+import { AuthenticationService } from './core/services/authentication.service'
 
 @Component({
   selector: 'app-root',
@@ -6,11 +7,13 @@ import { Component } from '@angular/core'
   styles: [],
 })
 export class AppComponent {
-  isSignedIn() {
-    if (localStorage.getItem('isSignedIn') === 'true') {
-      return true
-    } else {
-      return false
-    }
+  constructor(private authService: AuthenticationService) {
+    document.cookie.split(' ').forEach(val => {
+      if (val.startsWith('connect.sid=')) {
+        this.authService.isSignedIn = true
+        this.authService.hasError = false
+        this.authService.error = null
+      }
+    })
   }
 }

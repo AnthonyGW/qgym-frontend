@@ -15,6 +15,7 @@ export class AuthenticateComponent implements OnInit {
   email: string
   password: string
   confirmPassword: string
+  hasError: boolean
   error: string
   @Output()
   signedIn: EventEmitter<any> = new EventEmitter<any>()
@@ -38,6 +39,7 @@ export class AuthenticateComponent implements OnInit {
 
   submitSignin(signinForm: NgForm) {
     this.submitted = true
+    AuthenticationService.hasError = false
     const userData = {
       email: this.email,
       password: this.password,
@@ -50,13 +52,16 @@ export class AuthenticateComponent implements OnInit {
           this.email = ''
           this.password = ''
           this.submitted = false
+          this.authService.hasError = false
+          this.authService.error = null
           this.router.navigate(['dashboard'])
         }
-      }, this.handleError)
+      })
     }
   }
 
   submitSignup(signupForm: NgForm) {
+    this.submitted = true
     const userData = {
       email: this.email,
       password: this.password,
@@ -66,15 +71,14 @@ export class AuthenticateComponent implements OnInit {
     } else {
       this.authService.signupUser(userData).subscribe(data => {
         if (data['email'] === this.email) {
-          this.router.navigate(['signin'])
+          this.hasError = false
+          this.authService.signinUser(userData).subscribe(loginData => {
+            if (loginData['message'].startsWith('Authorization successful.')) {
+              this.router.navigate(['dashboard'])
+            }
+          })
         }
       })
-    }
-  }
-
-  handleError(error) {
-    if (error.status === 404) {
-      this.error = 'User account not found'
     }
   }
 }

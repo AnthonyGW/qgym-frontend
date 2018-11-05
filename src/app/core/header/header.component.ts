@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core'
+import { Component, OnChanges, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import { AuthenticationService } from '../services/authentication.service'
 
@@ -8,8 +8,8 @@ import { AuthenticationService } from '../services/authentication.service'
   styles: [],
 })
 export class HeaderComponent implements OnInit, OnChanges {
-  @Input()
-  isSignedIn: boolean
+  hasError: boolean
+  error: string
   constructor(private router: Router, public authService: AuthenticationService) {}
 
   ngOnInit() {}
@@ -17,8 +17,14 @@ export class HeaderComponent implements OnInit, OnChanges {
   ngOnChanges() {}
 
   signOut() {
-    this.authService.signoutUser().subscribe(data => {
-      this.router.navigate(['/'])
-    })
+    this.authService.signoutUser().subscribe(
+      data => {
+        this.router.navigate(['/'])
+      },
+      error => {
+        this.hasError = true
+        this.error = error
+      }
+    )
   }
 }

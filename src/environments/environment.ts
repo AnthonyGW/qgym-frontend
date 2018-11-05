@@ -3,8 +3,13 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
-};
+  production: false,
+  workoutsUrl: 'https://api.quickgym.xyz/v1/workouts/',
+  authUrl: 'https://api.quickgym.xyz/v1/users/',
+  musicApi: 'https://api-v2.hearthis.at/',
+  videosApi: 'https://www.googleapis.com/youtube/v3/search',
+  videosApiKey: '',
+}
 
 /*
  * For easier debugging in development mode, you can import the following file

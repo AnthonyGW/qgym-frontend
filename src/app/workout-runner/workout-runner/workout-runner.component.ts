@@ -74,6 +74,7 @@ export class WorkoutRunnerComponent implements OnInit {
   }
 
   startExercise(exercise: Exercise) {
+    this.workoutPaused = false
     this.currentExercise = exercise
     this.safeImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(
       this.imageUrlPrefix + this.currentExercise.image
@@ -86,6 +87,7 @@ export class WorkoutRunnerComponent implements OnInit {
     this.workoutTimeRemaining += this.exerciseRunningDuration
     this.exerciseRunningDuration = 0
     clearInterval(this.exerciseTrackingInterval)
+    this.workoutPaused = false
     this.startExerciseTimeTracking()
   }
 

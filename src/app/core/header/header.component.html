@@ -6,7 +6,7 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <h6>Quick Gym</h6>
-    <ul *ngIf="!isSignedIn" class="nav navbar-nav ml-auto justify-content-end">
+    <ul *ngIf="!authService.isSignedIn" class="nav navbar-nav ml-auto justify-content-end">
       <li class="nav-item">
         <a class="nav-link" routerLink="/home" title="Home">Home</a>
       </li>
@@ -17,7 +17,7 @@
         <a class="nav-link" title="Sign In" [routerLinkActive]="['active']" routerLink="/home/signin">Sign In</a>
       </li>
     </ul>
-    <ul *ngIf="isSignedIn" class="nav navbar-nav ml-auto justify-content-end">
+    <ul *ngIf="authService.isSignedIn" class="nav navbar-nav ml-auto justify-content-end">
       <li class="nav-item">
         <a class="nav-link" title="Dashboard" [routerLinkActive]="['active']" routerLink="/dashboard">Dashboard</a>
       </li>
@@ -27,3 +27,7 @@
     </ul>
   </div>
 </nav>
+
+<div *ngIf="hasError">
+  <label [innerText]="'Error trying to sign out: ' + error"></label>
+</div>

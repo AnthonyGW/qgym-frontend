@@ -4,6 +4,9 @@
       <h3>{{title}}</h3>
     </div>
     <div class="card-body">
+      <div *ngIf="authService.hasError">
+        <label class="alert alert-danger validation-message" [innerText]="authService.error['error']['error']?(authService.error['error']['error'].message):'Error, please try again after a while.'"></label>
+      </div>
       <div *ngIf="type === 'signup'">
         <form #signup="ngForm" name="formSignUp" (ngSubmit)="submitSignup(signup.form)">
           <div class="form-group">
@@ -11,6 +14,7 @@
             <label for="signupEmail">Email:</label>
             <input type="text" #signupEmailField="ngModel" name="signupEmail" class="form-control" id="signupEmail"
               placeholder="Email Address" [(ngModel)]="email" required email>
+            <br>
             <div *ngIf="signupEmailField.touched || submitted">
               <label *ngIf="signupEmailField.control.hasError('required')" class="alert alert-danger validation-message">Email
                 is required</label>
@@ -22,6 +26,7 @@
             <label for="signupPassword">Password:</label>
             <input type="password" #signupPasswordField="ngModel" name="signupPassword" class="form-control" id="signupPassword"
               placeholder="Password" [(ngModel)]="password" required>
+            <br>
             <div *ngIf="signupPasswordField.touched || submitted">
               <label *ngIf="signupPasswordField.control.hasError('required')" class="alert alert-danger validation-message">Password
                 is required</label>
@@ -30,10 +35,11 @@
             <label for="confirmPassword">Confirm Password:</label>
             <input type="password" #confirmPasswordField="ngModel" name="confirmPassword" class="form-control" id="confirmPassword"
               placeholder="Confirm Password" [(ngModel)]="confirmPassword" required>
+            <br>
             <div *ngIf="confirmPasswordField.touched || submitted">
               <label *ngIf="confirmPasswordField.control.hasError('required')" class="alert alert-danger validation-message">Please
                 enter your password again to confirm</label>
-              <label *ngIf="confirmPassword !== password" class="alert alert-danger validation-message">Passwords
+              <label *ngIf="confirmPassword !== password && !confirmPasswordField.control.hasError('required')" class="alert alert-danger validation-message">Passwords
                 do not match</label>
             </div>
             <br>
@@ -71,10 +77,6 @@
             <a routerLink="/home/signup">Don't have an account? Sign up</a>
           </div>
         </form>
-      </div>
-      <div *ngIf="error">
-        <br>
-        <label class="alert alert-danger validation-message">Error: {{error}}</label>
       </div>
     </div>
   </div>
