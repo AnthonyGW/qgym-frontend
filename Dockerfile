@@ -7,12 +7,14 @@ LABEL application="quickgym-frontend"
 WORKDIR /app
 
 # add files
-ADD dist/quickgym app/
+ADD ./dist/quickgym app/
 
-ADD server.js app/
+ADD ./server.js app/server.js
 
 RUN npm i -g express
 
 ENV NODE_PATH="/usr/local/lib/node_modules/"
 
-CMD node server.js
+RUN chmod +x app/server.js
+
+CMD app/server.js

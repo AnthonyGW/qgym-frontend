@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { Observable, ReplaySubject, throwError } from 'rxjs'
 import { catchError } from 'rxjs/operators'
+import { environment } from 'src/environments/environment'
 import { IHearThisSearchResult, IHearThisTrackResult } from '../../interfaces'
 
 @Injectable({
@@ -11,7 +12,7 @@ export class WorkoutMusicService implements IWorkoutMusicService {
   retrieveTrack: Observable<IHearThisSearchResult>
   trackSubject: ReplaySubject<IHearThisSearchResult>
   trackRequest: Observable<IHearThisSearchResult>
-  baseUrl = 'https://api-v2.hearthis.at/'
+  baseUrl = environment.musicApi
 
   constructor(private httpClient: HttpClient) {
     this.trackSubject = new ReplaySubject(1)

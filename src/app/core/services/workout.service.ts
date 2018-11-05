@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core'
 import { Observable, ReplaySubject, throwError } from 'rxjs'
 import { catchError, map } from 'rxjs/operators'
 import { IGetWorkoutsResponse } from 'src/app/interfaces'
+import '../../../environments/environment'
+import { environment } from '../../../environments/environment'
 import { CoreModule } from '../core.module'
 import { Exercise, WorkoutPlan } from '../model'
 import { AuthenticationService } from './authentication.service'
@@ -19,7 +21,7 @@ export class WorkoutService {
   workoutList: Array<WorkoutPlan> = []
   exercises: Array<Exercise> = []
   restExercise: Exercise
-  workoutsUrl = 'http://localhost:3040/api/v1/workouts'
+  workoutsUrl = environment.workoutsUrl
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
@@ -27,7 +29,7 @@ export class WorkoutService {
     withCredentials: true,
   }
 
-  constructor(public httpClient: HttpClient) {
+  constructor(public httpClient: HttpClient, private authService: AuthenticationService) {
     this.workoutSubject = new ReplaySubject(1)
     this.workoutsSubject = new ReplaySubject(1)
     this.setupInitialExercises()
@@ -61,7 +63,7 @@ export class WorkoutService {
             }
             if (!workout) {
               // workoutName not found, should navigate to error page
-              AuthenticationService.hasError = true
+              this.authService.hasError = true
               return throwError(new Error('Not Found'))
             } else {
               return workout
@@ -71,7 +73,7 @@ export class WorkoutService {
       )
       .pipe(catchError(AuthenticationService.handleError))
       .pipe(data => {
-        AuthenticationService.hasError = false
+        this.authService.hasError = false
         return data
       })
     this.retrieveWorkout.subscribe(
@@ -115,14 +117,16 @@ export class WorkoutService {
         )
         .pipe(catchError(AuthenticationService.handleError))
         .pipe(data => {
-          AuthenticationService.hasError = false
+          this.authService.hasError = false
           return data
         })
       this.workoutsRequest.subscribe(
         result => {
           this.workoutsSubject.next(result)
         },
-        error => this.workoutsSubject.error(error)
+        error => {
+          this.workoutsSubject.error(error)
+        }
       )
     }
     return this.workoutsSubject.asObservable()
@@ -142,7 +146,7 @@ export class WorkoutService {
         .post(this.workoutsUrl, workoutRequest, this.httpOptions)
         .pipe(catchError(AuthenticationService.handleError))
         .pipe(data => {
-          AuthenticationService.hasError = false
+          this.authService.hasError = false
           return data
         })
     }
@@ -161,7 +165,7 @@ export class WorkoutService {
       .put(this.workoutsUrl + '/' + workout.id, workoutRequest, this.httpOptions)
       .pipe(catchError(AuthenticationService.handleError))
       .pipe(data => {
-        AuthenticationService.hasError = false
+        this.authService.hasError = false
         return data
       })
   }
@@ -171,7 +175,7 @@ export class WorkoutService {
       .delete(this.workoutsUrl + '/' + workoutId, this.httpOptions)
       .pipe(catchError(AuthenticationService.handleError))
       .pipe(data => {
-        AuthenticationService.hasError = false
+        this.authService.hasError = false
         return data
       })
   }
@@ -344,12 +348,12 @@ export class WorkoutService {
     this.basicWorkout = new WorkoutPlan(
       '8 Minute Workout',
       this.exercises,
-      5,
       10,
+      30,
       `A basic workout plan that has all the exercises with no repetition.
       <br>
       You are not fit until you can beat this in one go.`,
-      'imaxx-ableton/survivor-eye-of-the-tigerimaxx-remix'
+      'djmister-m/pntwrdukibjh128'
     )
   }
 }

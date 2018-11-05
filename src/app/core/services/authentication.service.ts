@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { Observable, throwError } from 'rxjs'
 import { catchError } from 'rxjs/operators'
+import { environment } from '../../../environments/environment'
 
 @Injectable({
   providedIn: 'root',
@@ -9,23 +10,20 @@ import { catchError } from 'rxjs/operators'
 export class AuthenticationService {
   public static hasError = false
   public static error: Response
-  apiUrl = 'http://localhost:3040/api/v1/users/'
+  public static isSignedIn = false
+  apiUrl = environment.authUrl
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
     }),
     withCredentials: true,
   }
-  constructor(private httpClient: HttpClient) {
-    if (!localStorage.getItem('isSignedIn')) {
-      localStorage.setItem('isSignedIn', 'false')
-    }
-  }
+  constructor(private httpClient: HttpClient) {}
 
   static handleError(error: Response) {
     console.error(error)
-    this.hasError = true
-    this.error = error
+    AuthenticationService.hasError = true
+    AuthenticationService.error = error
     return throwError(error || 'Server error')
   }
 
@@ -45,13 +43,25 @@ export class AuthenticationService {
     AuthenticationService.hasError = err
   }
 
+  get isSignedIn() {
+    return AuthenticationService.isSignedIn
+  }
+
+  set isSignedIn(val) {
+    AuthenticationService.isSignedIn = val
+  }
+
   signinUser(userCredentials: any) {
     return this.httpClient
       .post(this.apiUrl + 'signin', userCredentials, this.httpOptions)
       .pipe(catchError(AuthenticationService.handleError))
       .pipe(data => {
         this.hasError = false
-        localStorage.setItem('isSignedIn', 'true')
+        document.cookie.split(' ').forEach(val => {
+          if (val.startsWith('connect.sid=')) {
+            AuthenticationService.isSignedIn = true
+          }
+        })
         return data
       })
   }
@@ -71,7 +81,7 @@ export class AuthenticationService {
       .get(this.apiUrl + 'signout', this.httpOptions)
       .pipe(catchError(AuthenticationService.handleError))
       .pipe(data => {
-        localStorage.setItem('isSignedIn', 'false')
+        this.isSignedIn = false
         return data
       })
   }
