@@ -7,6 +7,7 @@ import {
 } from '@angular/router'
 import { take } from 'rxjs/operators'
 import { WorkoutPlan } from '../core/model'
+import { AuthenticationService } from '../core/services/authentication.service'
 import { WorkoutService } from '../core/services/workout.service'
 
 @Injectable()
@@ -18,16 +19,10 @@ export class WorkoutRunnerResolver implements Resolve<WorkoutPlan> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): any {
     const workoutParam = route.paramMap.get('workoutName')
-    if (
-      workoutParam === '8-minute-workout' &&
-      localStorage.getItem('isSignedIn') === 'false'
-    ) {
+    if (workoutParam === '8-minute-workout' && !AuthenticationService.isSignedIn) {
       this.workout = this.workoutService.basicWorkout
       return this.workout
-    } else if (
-      workoutParam !== '8-minute-workout' &&
-      localStorage.getItem('isSignedIn') === 'false'
-    ) {
+    } else if (workoutParam !== '8-minute-workout' && !AuthenticationService.isSignedIn) {
       this.router.navigate(['error'])
       return null
     }

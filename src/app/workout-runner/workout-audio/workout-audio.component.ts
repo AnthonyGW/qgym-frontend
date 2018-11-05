@@ -48,7 +48,7 @@ export class WorkoutAudioComponent implements OnInit {
         .subscribe((data: IHearThisTrackResult) => {
           this.musicData = this.mapTrackData(data)
           this.trackUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-            this.musicData.preview_url
+            this.musicData.stream_url
           )
         })
       return this.musicData

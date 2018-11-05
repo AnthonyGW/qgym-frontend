@@ -50,13 +50,13 @@ export class WorkoutBuilderServiceMock {
         retrievedWorkout.exercises,
         retrievedWorkout.restBetweenExercise,
         retrievedWorkout.exerciseDuration,
-        retrievedWorkout.description,
-        retrievedWorkout.track,
+        retrievedWorkout.description || '',
+        retrievedWorkout.track || '',
         retrievedWorkout.id
       )
       this.newWorkout = false
     } else {
-      this.workoutBuild = new WorkoutPlan('', [], 10, 30, '')
+      this.workoutBuild = new WorkoutPlan('', [], 10, 30, '', '')
       this.newWorkout = true
     }
     return this.workoutBuild

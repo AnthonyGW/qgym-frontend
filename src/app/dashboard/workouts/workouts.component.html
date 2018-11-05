@@ -19,6 +19,9 @@
         'No
         Description'"></p>
         <small><b>Exercises:</b> {{workout.exercises | concatlist: 'title' : 5}}</small>
+        <br>
+        <small *ngIf="workout.track !== ''"><b>Track:</b> {{workout.track}}</small>
+        <small class="text-muted" *ngIf="workout.track === ''"><b>No Track</b></small>
       </div>
       <button class="btn btn-primary btn-md float-right" (click)="deleteWorkout(workout.id)"><span class="ion-md-trash"></span></button>
       <button class="btn btn-primary btn-md float-right" style="margin-right: 10px;" data-toggle="modal" data-target="#workoutBuilder"

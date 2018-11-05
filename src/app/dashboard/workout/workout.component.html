@@ -9,12 +9,12 @@
                 <label for="workout-name">Workout Name:</label>
                 <input type="text" #workoutName="ngModel" name="workoutName" class="form-control" id="workout-name"
                   placeholder="Enter workout name. Must be unique." [(ngModel)]="workoutBuilderService.workoutBuild.name"
-                  minlength="5" maxlength="20" required>
+                  minlength="1" maxlength="40" required>
                 <div *ngIf="workoutName.touched || workoutBuilderService.submitted">
                   <label *ngIf="workoutName.control.hasError('required') && workoutBuilderService.submitted" class="alert alert-danger validation-message">Name
                     is required</label>
                   <label *ngIf="(workoutName.control.hasError('minlength') || workoutName.control.hasError('maxlength') && (workoutBuilderService.workoutBuild.name.length > 0)) && workoutBuilderService.submitted"
-                    class="alert alert-danger">Name should be between 5 and 20 characters long</label>
+                    class="alert alert-danger">Name should be between 1 and 40 characters long</label>
                 </div>
               </div>
               <div class="form-group">
@@ -78,12 +78,15 @@
                 </div>
               </div>
               <br>
+              <div *ngIf="workoutBuilderService.workoutBuild.track !== ''">
+                <div>{{'Selected: ' + workoutBuilderService.workoutBuild.track.split('/')[0]}}:
+                  {{workoutBuilderService.workoutBuild.track.split('/')[1]}}</div>
+              </div>
               <div *ngIf="searchResults" class="music-search-results">
                 <div *ngFor="let result of searchResults; let idx = index">
                   <div class="radio" style="border-bottom: 1px solid #e9ecef; padding-left: 5px">
                     <input type="radio" [id]="result.id" name="musicTracks" [attr.data-preview]="result.preview_url"
-                      [value]="result.user.permalink + '/' + result.permalink" [(ngModel)]="workoutBuilderService.workoutBuild.track"
-                      [attr.checked]="idx === 0" />
+                      [value]="result.user.permalink + '/' + result.permalink" [(ngModel)]="workoutBuilderService.workoutBuild.track" />
                     <div>{{result.user.username}}: {{result.title}}</div>
                     <audio controls [attr.name]="result.id">
                       <source src="{{result.preview_url}}" type="audio/mpeg">

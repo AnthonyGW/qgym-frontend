@@ -37,7 +37,6 @@ describe('HeaderComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(HeaderComponent)
     component = fixture.componentInstance
-    component.isSignedIn = false
     fixture.detectChanges()
   })
 
